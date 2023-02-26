@@ -1,0 +1,8 @@
+{
+  "original_format": "step",
+  "original_format_file_path": "step_dataset/",
+  "destination_format_file_path": "stl_dataset/",
+  "tolerance" : null,
+  "angularTolerance" : null,
+  "binary": true,
+}
