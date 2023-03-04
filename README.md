@@ -1,1 +1,1 @@
-# Localizing-and-Matching-CAD-Models-in-3D-Scans
+# Localizing and Matching CAD Models in 3D-Scans

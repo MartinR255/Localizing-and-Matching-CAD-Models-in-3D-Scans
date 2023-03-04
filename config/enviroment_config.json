@@ -1,0 +1,12 @@
+{
+    "camera" : {
+        "camera_distance" : 10,
+        "camera_yaw" : 90,
+        "camera_pitch" : -25,
+        "camera_target_position" : [0, 0, 0] 
+    },
+
+    "light" : {
+        "light_position" : [0, 0, 100]
+    }
+}

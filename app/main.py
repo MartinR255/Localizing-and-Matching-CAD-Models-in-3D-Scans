@@ -3,10 +3,8 @@ import time
 
 if __name__ == "__main__":
     sb = SceneBuilder()
-    sb.build_bin_from_stl('../../bins/bin_small.stl')
-    sb.build_object_from_stl('../../stl_dataset/testExport.stl')
-
-    sb.run_gui()
+    sb.build_scene()
+    sb.run()
     
     
 

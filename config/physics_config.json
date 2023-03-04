@@ -1,0 +1,22 @@
+{
+    "bin" : {
+        "mass" : 100.00,
+        "mesh_scale" : [0.01, 0.01, 0.01],
+        "bin_classic_file_path" : "",
+        "bin_small_file_path" : "../app_data/bins/bin_small.stl"
+    },
+
+    "cad_model" : {
+        "mass" : 0.5,
+        "mesh_scale" : [0.01, 0.01, 0.01],
+        "folder_path" : "../app_data/cad_models"
+    },
+
+    "dynamics" : {
+        "restitution" : 0.0,
+        "lateral_friction" : 0.6,
+        "rolling_friction" : 0.001,
+        "spinning_friction" : 0.001
+    }
+
+}
