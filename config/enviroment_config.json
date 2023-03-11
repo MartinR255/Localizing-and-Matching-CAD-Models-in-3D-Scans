@@ -8,5 +8,8 @@
 
     "light" : {
         "light_position" : [0, 0, 100]
-    }
+    },
+
+    "models_quantity" : 50,
+    "gui_enabled" : true
 }
