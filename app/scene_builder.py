@@ -9,21 +9,17 @@ from os.path import isfile, join
 class SceneBuilder:
     
     def __init__(self):
-        self.physics_client = pb.connect(pb.GUI) # pb.DIRECT
-        self.dt = pb.getPhysicsEngineParameters()['fixedTimeStep']
-        pb.setAdditionalSearchPath(pybullet_data.getDataPath())
-        pb.setGravity(0,0,-9.8)
-        pb.setRealTimeSimulation(1)
         self.load_config_files()
         self.load_paths()
-
+        self.setup_physics_simualtion()
+        
         # camera and light setup
         self.setup_camera()
         self.setup_light()
 
         self.plane = pb.loadURDF("plane.urdf",[0, 0, 0])
-        # self.cad_models_obj = set() 
-        # self.collision_client = pb.connect(pb.DIRECT)
+        self.outside_bin_obj = set()
+        
     
 
     def load_config_files(self):
@@ -40,6 +36,18 @@ class SceneBuilder:
         self.bin_file_path = self.physics_setup['bin']['bin_small_file_path']
         cad_models_folder_path = self.physics_setup['cad_model']['folder_path']
         self.cad_models_file_paths = [join(cad_models_folder_path, f) for f in listdir(cad_models_folder_path) if isfile(join(cad_models_folder_path, f))]
+
+
+    def setup_physics_simualtion(self):
+        if self.enviroment_setup['gui_enabled']:
+            self.physics_client = pb.connect(pb.GUI) 
+        else:
+            self.physics_client = pb.connect(pb.DIRECT) 
+            
+        self.dt = pb.getPhysicsEngineParameters()['fixedTimeStep']
+        pb.setAdditionalSearchPath(pybullet_data.getDataPath())
+        pb.setGravity(0,0,-9.8)
+        pb.setRealTimeSimulation(1)
 
 
     def setup_camera(self):
@@ -126,16 +134,30 @@ class SceneBuilder:
         multi_body = self.create_multi_body(visual_shape, collision_shape, cad_model_conf['mass'], (0, 0, 50))
 
         pb.changeVisualShape(multi_body, -1, rgbaColor=(0.5, 0.1, 0.8, 1))
+        self.outside_bin_obj.add(multi_body)
 
 
     def build_scene(self):
         self.build_bin(self.bin_file_path)
-        for _ in range(50):
-            body_id = self.build_cad_model(self.cad_models_file_paths[0])
+        for _ in range(self.enviroment_setup['models_quantity']):
+            self.build_cad_model(self.cad_models_file_paths[0])
 
     
+    def checkCollisionWithPlane(self):
+        # pb.performCollisionDetection(self.physics_client)
+
+        remove_objects = set()
+        for obj in self.outside_bin_obj:
+            contact_points = pb.getContactPoints(self.plane, obj, physicsClientId=self.physics_client)
+            if len(contact_points) != 0:
+                pb.removeBody(obj)
+                remove_objects.add(obj)
+        self.outside_bin_obj.difference(remove_objects)
+
+
     def run(self):
         while pb.isConnected():
+            self.checkCollisionWithPlane()
             pb.stepSimulation()
             time.sleep(self.dt)
 
