@@ -4,6 +4,7 @@ import json
 import time
 from os import listdir
 from os.path import isfile, join
+from random import randrange
 
 
 class SceneBuilder:
@@ -116,6 +117,14 @@ class SceneBuilder:
         pb.changeVisualShape(multi_body, -1, rgbaColor=[0.8,0.8,0.8,1])
 
 
+    def get_random_object_position(self):
+        x = randrange(-50, 50) * 0.02
+        y = randrange(-50, 50) * 0.02
+        z = randrange(25, 50)
+
+        return x, y, z
+
+
     '''
     builds CAD model object from STL file
     '''
@@ -123,7 +132,9 @@ class SceneBuilder:
         cad_model_conf = self.physics_setup['cad_model'] 
         collision_shape = self.create_collision_shape(path, cad_model_conf['mesh_scale'])
         visual_shape = self.create_visual_shape(path, cad_model_conf['mesh_scale'])
-        multi_body = self.create_multi_body(visual_shape, collision_shape, cad_model_conf['mass'], (0, 0, 50))
+
+        position = self.get_random_object_position()
+        multi_body = self.create_multi_body(visual_shape, collision_shape, cad_model_conf['mass'], position)
 
         pb.changeVisualShape(multi_body, -1, rgbaColor=(0.5, 0.1, 0.8, 1))
 
@@ -133,7 +144,7 @@ class SceneBuilder:
         for _ in range(50):
             body_id = self.build_cad_model(self.cad_models_file_paths[0])
 
-    
+
     def run(self):
         while pb.isConnected():
             pb.stepSimulation()
